@@ -12,12 +12,10 @@ import org.openimaj.image.FImage;
 import org.openimaj.image.ImageUtilities;
 import org.openimaj.image.processing.resize.ResizeProcessor;
 import org.openimaj.knn.FloatNearestNeighboursExact;
-import org.openimaj.knn.ObjectNearestNeighboursExact;
-import org.openimaj.ml.clustering.kmeans.FloatKMeans;
+import org.openimaj.util.pair.IntFloatPair;
 
 
 public class App {
-
 
 
 	public static void main( String[] args ) {
@@ -40,26 +38,41 @@ public class App {
     	// Split into training and test data
     	GroupedRandomSplitter<String, FImage> splits = new GroupedRandomSplitter<String, FImage>(groupedImages, 45, 0, 5);
     	
-    	float[][] trData = new float[splits.getTrainingDataset().numInstances()][16*16];
+    	// Define variables for training and test data
+    	int nTraining = splits.getTrainingDataset().numInstances();
+    	int nTest     = splits.getTestDataset().numInstances();
+    	GroupedDataset<String, ListDataset<FImage>, FImage> training = splits.getTrainingDataset();
+    	GroupedDataset<String, ListDataset<FImage>, FImage> test = splits.getTestDataset();
+    	
+    	
+    	// For every instance of data, within every group, turn the img into a feature vector and record it's classification
     	int idx = 0;
-    	for(String groupName : splits.getTrainingDataset().getGroups()) {
-    		ListDataset<FImage> groupData = groupedImages.getInstances(groupName);
-    		for(int i=0; i<groupData.size(); i++) {
-    			float[] vectorInstance = imageToFloatVector(groupData.get(i));
+    	float[][] trData = new float[nTraining][16*16];
+    	String[] trClass = new String[nTraining];
+    	for(String groupName : training.getGroups()) {
+    		ListDataset<FImage> groupInstances = training.get(groupName);
+    		
+    		for(int i=0; i<groupInstances.size(); i++) {
+    			float[] vectorInstance = imageToFloatVector(groupInstances.get(i));
     			trData[i] = vectorInstance;
+    			trClass[i] = groupName;
     			idx++;
     		}
     	}
+    	
+    	
 		
-		
+		int k = 3;
 		final FloatNearestNeighboursExact nn = new FloatNearestNeighboursExact(trData);
-		final List<IntDoublePair> neighbours = nn.searchKNN(mean, k);
-    	
-    	
-    	GroupedDataset<String, ListDataset<FImage>, FImage> testData = splits.getTestDataset();
+    	    	
+		// Do KNN on tstData
     	for(String groupName : testData.getGroups()) {
     		ListDataset<FImage> groupData = testData.getInstances(groupName);
-    		for
+    		for(int i=0; i<groupData.size(); i++) {
+    			float[] tstVector = imageToFloatVector(cropCentre(groupData.get(i)));
+    			List<IntFloatPair> neighbors = nn.searchKNN(tstVector, k);
+
+    		}
     	}
     }
 	
@@ -74,14 +87,12 @@ public class App {
 			resolution = original.height;
 		
 		return ResizeProcessor.resample(original.extractCenter(resolution, resolution), 16, 16);
-		
 	}
 	
 	
 	public static float[] imageToFloatVector(FImage img) {
 		
 		float[] floatVector = null;
-		
 		for(int i=0; i< img.width; i++){
 			floatVector = ArrayUtils.addAll(floatVector, img.pixels[i]);
 		}
