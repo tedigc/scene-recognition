@@ -1,13 +1,17 @@
 package cw;
 
+import java.util.Arrays;
 import java.util.List;
+import java.util.Map.Entry;
 
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.vfs2.FileSystemException;
 import org.openimaj.data.dataset.GroupedDataset;
 import org.openimaj.data.dataset.ListDataset;
 import org.openimaj.data.dataset.VFSGroupDataset;
+import org.openimaj.data.dataset.VFSListDataset;
 import org.openimaj.experiment.dataset.split.GroupedRandomSplitter;
+import org.openimaj.image.DisplayUtilities;
 import org.openimaj.image.FImage;
 import org.openimaj.image.ImageUtilities;
 import org.openimaj.image.processing.resize.ResizeProcessor;
@@ -40,6 +44,12 @@ public class App {
     	System.out.println("nTraining: " + nTraining);
     	System.out.println("nTest    : " + nTest);
     	
+    	for(String groupName : test.getGroups()) {
+    		for(FImage img : test.get(groupName)) {
+    			DisplayUtilities.display(img);
+    		}
+    	}
+    	
     	// TRAINING DATA
     	// - For every instance of data, within every group, turn the img into a feature vector and record it's classification
     	int idx = 0;
@@ -50,17 +60,10 @@ public class App {
     		
     		for(int i=0; i<groupInstances.size(); i++) {
     			float[] vectorInstance = imageToFloatVector(cropCentre(groupInstances.get(i)));
-    			trData[i] = vectorInstance;
-    			trClass[i] = groupName;
+    			trData[idx] = vectorInstance;
+    			trClass[idx] = groupName;
     			idx++;
     		}
-    	}
-    	
-    	for(int i=0; i<nTraining; i++) {
-    		for(int j=0; j<256; j++) {
-    			System.out.print(trData[i][j] + ", ");
-    		}
-    		System.out.println();
     	}
     	
     	// TEST DATA
@@ -73,8 +76,8 @@ public class App {
     		
     		for(int i=0; i<groupInstances.size(); i++) {
     			float[] vectorInstance = imageToFloatVector(cropCentre(groupInstances.get(i)));
-    			tsData[i] = vectorInstance;
-    			tsClass[i] = groupName;
+    			tsData[idx] = vectorInstance;
+    			tsClass[idx] = groupName;
     			idx++;
     		}
     	}
@@ -84,17 +87,21 @@ public class App {
 		final FloatNearestNeighboursExact nn = new FloatNearestNeighboursExact(trData);
     	    	
 		// For every instance of test data within every group, find the KNN from the training data and it's average class.
-    	for(int i=0; i<tsData.length-1; i++) {
+    	int correct   = 0;
+    	int incorrect = 0;
+		for(int i=0; i<tsData.length-1; i++) {
     		List<IntFloatPair> neighbors = nn.searchKNN(tsData[i], k);
     		for(IntFloatPair pair : neighbors) {
-    			System.out.println(pair);
     			String predictedClass = trClass[pair.getFirst()];
     			String actualClass = tsClass[i];
-    			System.out.println(predictedClass);
-    			System.out.println(actualClass);
+    			if(predictedClass == actualClass) 
+    				correct++;
+    			else
+    				incorrect++;
     		}
-    		System.out.println();
     	}
+		double accuracy = (double) correct / (double) (correct + incorrect);
+		System.out.println("Accuracy: " + accuracy);
     }
 	
 	
