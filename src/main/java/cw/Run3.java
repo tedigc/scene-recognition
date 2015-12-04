@@ -54,13 +54,13 @@ import de.bwaldvogel.liblinear.SolverType;
 
 public class Run3 {
 
-	public static void main(String[] args) throws IOException{
+	public void run() throws IOException {
 		
 		Timer t1 = Timer.timer();
 
 		VFSGroupDataset<FImage> groupedImages = null;
 		try {
-			groupedImages = new VFSGroupDataset<FImage>("/Users/tedigc/Documents/University/Computer Vision/Scene Recognition/SceneRecognition/training", ImageUtilities.FIMAGE_READER);
+			groupedImages = new VFSGroupDataset<FImage>("/home/ec7g13/Documents/Computer Vision/scene-recognition/training", ImageUtilities.FIMAGE_READER);
 		} catch (FileSystemException e) {
 			e.printStackTrace();
 		}
@@ -128,7 +128,6 @@ public class Run3 {
 		System.out.println("nTest    : " + nTest);
 
 		System.out.println(result);
-		
 	}
 	
 	// Extracts the first 10000 dense SIFT features from the images in the given dataset

@@ -22,8 +22,6 @@ public class DenseSamplingEngine implements Engine {
 
 	@Override
 	public LocalFeatureList findFeatures(Image image) {
-
-		LocalFeatureList<Keypoint> featureVectors = new LocalFeatureList<Keypoint>();
 		
 		List<Rectangle> patches = getPatches(image);
 		for(Rectangle rect : patches) {
