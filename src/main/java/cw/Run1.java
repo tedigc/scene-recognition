@@ -35,7 +35,7 @@ public class Run1 {
 		// Load dataset
     	VFSGroupDataset<FImage> groupedImages = null;
     	try {
-			groupedImages = new VFSGroupDataset<FImage>("/Users/tedigc/Documents/University/Computer Vision/Scene Recognition/SceneRecognition/training", ImageUtilities.FIMAGE_READER);
+			groupedImages = new VFSGroupDataset<FImage>("/home/ec7g13/Documents/Computer Vision/scene-recognition/training", ImageUtilities.FIMAGE_READER);
 		} catch (FileSystemException e) {
 			e.printStackTrace();
 		}
