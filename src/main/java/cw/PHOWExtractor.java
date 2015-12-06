@@ -11,7 +11,7 @@ import org.openimaj.ml.clustering.assignment.HardAssigner;
 import org.openimaj.util.pair.IntFloatPair;
 
 //Used to train classifier - computes 4 histograms across an image
-class PHOWExtractor implements FeatureExtractor<DoubleFV, FImage> {
+class PHOWExtractor implements FeatureExtractor<DoubleFV, Record> {
 
 	
 	PyramidDenseSIFT<FImage> pdsift;
@@ -25,7 +25,7 @@ class PHOWExtractor implements FeatureExtractor<DoubleFV, FImage> {
 	}
 	
 	@Override
-	public DoubleFV extractFeature(FImage object) {
+	public DoubleFV extractFeature(Record object) {
 
 		FImage image = object.getImage();
 		pdsift.analyseImage(image);
