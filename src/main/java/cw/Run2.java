@@ -3,8 +3,10 @@ package cw;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
 import org.openimaj.data.DataSource;
 import org.openimaj.data.dataset.GroupedDataset;
@@ -47,21 +49,21 @@ public class Run2 extends Run {
 	@Override
 	public void run() {
 
-		loadImages("/Users/tedigc/Documents/University/Computer Vision/Scene Recognition/SceneRecognition/training");
+		loadImages("/Users/marcosss3/Downloads/training");
 		
 		// Turn the groups of images into groups of records
 		GroupedDataset<String, ListDataset<Record>, Record> allData = new MapBackedDataset<String, ListDataset<Record>, Record>();;
 		for(String groupName : groupedImages.getGroups()) {
-			ListDataset<FImage> groupInstances = test.get(groupName); 
+			ListDataset<FImage> groupInstances = groupedImages.get(groupName); 
 			ListDataset<Record> recordList = new ListBackedDataset<Record>();
     		for(int i=0; i<groupInstances.size(); i++) {
-    			recordList.add(new Record(String.valueOf(i), groupInstances.get(i)));
+    			recordList.add(new Record(String.valueOf(i), groupInstances.get(i), groupName));
     		}
     		allData.put(groupName, recordList);
 		}
 		
 		// Split into training and test data
-		GroupedRandomSplitter<String, Record> splits = new GroupedRandomSplitter<String, Record>(allData, 9, 0, 1);
+		GroupedRandomSplitter<String, Record> splits = new GroupedRandomSplitter<String, Record>(allData, 1, 0, 1);
 		GroupedDataset<String, ListDataset<Record>, Record> training = splits.getTrainingDataset();
 		GroupedDataset<String, ListDataset<Record>, Record> test 	 = splits.getTestDataset();;
 		int nTraining = training.numInstances();
@@ -70,7 +72,7 @@ public class Run2 extends Run {
 		Timer t1 = Timer.timer();
 		
 		DensePatchEngine engine = new DensePatchEngine(4, 8);
-		HardAssigner<float[], float[], IntFloatPair> assigner = readOrTrainAssigner(engine, 45);
+		HardAssigner<float[], float[], IntFloatPair> assigner = readOrTrainAssigner(engine, nTraining);
 		FeatureExtractor<? extends FeatureVector, Record> extractor = new DensePatchFeatureExtractor(assigner, engine);
 		
 		// Construct and train a linear classifier
@@ -92,9 +94,26 @@ public class Run2 extends Run {
 
 		Map<Record, ClassificationResult<String>> guesses = eval.evaluate();
 		CMResult<String> result = eval.analyse(guesses);
+		
+		TreeMap<Record, ClassificationResult<String>> sortedGuesses = new TreeMap<Record, ClassificationResult<String>>();
+		sortedGuesses.putAll(guesses);
 
+	    Iterator it = sortedGuesses.entrySet().iterator();
+	    while (it.hasNext()) {
+	        Map.Entry<Record, ClassificationResult<String>> pair = (Map.Entry<Record, ClassificationResult<String>>)it.next();
+	        String imgClass = pair.getValue().getPredictedClasses().toString();
+	        System.out.println(pair.getKey().getID() + " " + imgClass.substring(1, imgClass.length()-1));
+	        it.remove(); // avoids a ConcurrentModificationException
+	    }
+	    
+	    
+	    
+	    System.out.println();
+		
+		System.out.println("nTraining: " + nTraining);
+		System.out.println("nTest    : " + nTest);	
 		System.out.println(result);
-		System.out.println("Time taken: " + t1.duration()/1000 + "s");
+		System.out.println("Time: " + t1.duration()/1000 + "s");
 	}
 
 	// Extracts the first 10000 dense SIFT features from the images in the given dataset

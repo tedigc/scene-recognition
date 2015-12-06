@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
 import org.openimaj.data.DataSource;
 import org.openimaj.data.dataset.Dataset;
@@ -44,44 +45,47 @@ public class Run3 extends Run {
 	@Override
 	public void run() {
 
-		loadImages("/Users/tedigc/Documents/University/Computer Vision/Scene Recognition/SceneRecognition/training");
+		loadImages("/Users/marcosss3/Downloads/training");
 		Timer t1 = Timer.timer();
 
 		// Extracts upright SIFT features at a single scale on a grid
 		DenseSIFT dsift = new DenseSIFT(3, 8);
 		// Dense sift features are extracted for the given bin sizes
-		PyramidDenseSIFT<FImage> pdsift = new PyramidDenseSIFT<FImage>(dsift, 6f, 8);
+		PyramidDenseSIFT<Record> pdsift = new PyramidDenseSIFT<Record>(dsift, 6f, 8);
 		HardAssigner<float[], float[], IntFloatPair> assigner = readOrTrainAssigner(pdsift, 45);
 
 		HomogeneousKernelMap map = new HomogeneousKernelMap(
 				KernelType.Chi2, org.openimaj.ml.kernel.HomogeneousKernelMap.WindowType.Rectangular);
 
-		FeatureExtractor<DoubleFV, FImage> extractor = new PHOWExtractor(pdsift, assigner);
+		FeatureExtractor<DoubleFV, Record> extractor = new PHOWExtractor(pdsift, assigner);
 		extractor = map.createWrappedExtractor(extractor);
 
 		// Construct and train a linear classifier
-		LiblinearAnnotator<FImage, String> ann = new LiblinearAnnotator<FImage, String>(
+		LiblinearAnnotator<Record, String> ann = new LiblinearAnnotator<Record, String>(
 				extractor, Mode.MULTICLASS, SolverType.L2R_L2LOSS_SVC, 1.0, 0.00001);
 
 		ann.train(training);
 
-		ClassificationEvaluator<CMResult<String>, String, FImage> eval =
-				new ClassificationEvaluator<CMResult<String>, String, FImage>(
-						ann, test, new CMAnalyser<FImage, String>(CMAnalyser.Strategy.SINGLE));
+		ClassificationEvaluator<CMResult<String>, String, Record> eval =
+				new ClassificationEvaluator<CMResult<String>, String, Record>(
+						ann, 
+						test, 
+						new CMAnalyser<Record, String>(CMAnalyser.Strategy.SINGLE));
 
-		Map<FImage, ClassificationResult<String>> guesses = eval.evaluate();
+		Map<Record, ClassificationResult<String>> guesses = eval.evaluate();
 		CMResult<String> result = eval.analyse(guesses);
+		
+		TreeMap<Record, ClassificationResult<String>> sortedGuesses = new TreeMap<Record, ClassificationResult<String>>();
+		sortedGuesses.putAll(guesses);
 
-		System.out.println(result);
-		System.out.println("Time taken: " + t1.duration()/1000 + "s");
-		System.out.println();
-
-		Iterator it = guesses.entrySet().iterator();
-		while (it.hasNext()) {
-			Map.Entry pair = (Map.Entry)it.next();
-			System.out.println(pair.getKey() + " - " + pair.getValue());
-			it.remove(); // avoids a ConcurrentModificationException
-		}
+	    Iterator it = sortedGuesses.entrySet().iterator();
+	    while (it.hasNext()) {
+	        Map.Entry<Record, ClassificationResult<String>> pair = (Map.Entry<Record, ClassificationResult<String>>)it.next();
+	        String imgClass = pair.getValue().getPredictedClasses().toString();
+	        System.out.println(pair.getKey().getID() + " " + imgClass.substring(1, imgClass.length()-1));
+	        it.remove(); // avoids a ConcurrentModificationException
+	    }
+	    
 	}		
 
 
