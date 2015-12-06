@@ -6,8 +6,8 @@ public class App {
 
 	public static void main(String[] args) {
 		
-		Run3 run3 = new Run3();
-		run3.run();
+		Run2 run2 = new Run2();
+		run2.run();
 	}
 	
 

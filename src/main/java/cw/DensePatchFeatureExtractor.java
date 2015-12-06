@@ -9,7 +9,7 @@ import org.openimaj.image.feature.local.aggregate.BlockSpatialAggregator;
 import org.openimaj.ml.clustering.assignment.HardAssigner;
 import org.openimaj.util.pair.IntFloatPair;
 
-class DensePatchFeatureExtractor implements FeatureExtractor<DoubleFV, FImage> {
+class DensePatchFeatureExtractor implements FeatureExtractor<DoubleFV, Record> {
 
 	DensePatchEngine engine;
 	HardAssigner<float[], float[], IntFloatPair> assigner;
@@ -20,8 +20,9 @@ class DensePatchFeatureExtractor implements FeatureExtractor<DoubleFV, FImage> {
 		this.assigner = assigner;
 	}
 
-	public DoubleFV extractFeature(FImage image) {
+	public DoubleFV extractFeature(Record rec) {
 
+		FImage image = rec.getImage();
 		// Assign each dense SIFT feature to a visual word
 		BagOfVisualWords<float[]> bovw = new BagOfVisualWords<float[]>(assigner);
 

@@ -8,14 +8,19 @@ import java.util.Map;
 
 import org.openimaj.data.DataSource;
 import org.openimaj.data.dataset.GroupedDataset;
+import org.openimaj.data.dataset.ListBackedDataset;
 import org.openimaj.data.dataset.ListDataset;
+import org.openimaj.data.dataset.MapBackedDataset;
 import org.openimaj.experiment.dataset.sampling.GroupedUniformRandomisedSampler;
+import org.openimaj.experiment.dataset.split.GroupedRandomSplitter;
 import org.openimaj.experiment.evaluation.classification.ClassificationEvaluator;
 import org.openimaj.experiment.evaluation.classification.ClassificationResult;
+import org.openimaj.experiment.evaluation.classification.Classifier;
 import org.openimaj.experiment.evaluation.classification.analysers.confusionmatrix.CMAnalyser;
 import org.openimaj.experiment.evaluation.classification.analysers.confusionmatrix.CMResult;
 import org.openimaj.feature.DoubleFV;
 import org.openimaj.feature.FeatureExtractor;
+import org.openimaj.feature.FeatureVector;
 import org.openimaj.feature.local.data.LocalFeatureListDataSource;
 import org.openimaj.feature.local.list.LocalFeatureList;
 import org.openimaj.image.FImage;
@@ -43,15 +48,33 @@ public class Run2 extends Run {
 	public void run() {
 
 		loadImages("/Users/tedigc/Documents/University/Computer Vision/Scene Recognition/SceneRecognition/training");
-
+		
+		// Turn the groups of images into groups of records
+		GroupedDataset<String, ListDataset<Record>, Record> allData = new MapBackedDataset<String, ListDataset<Record>, Record>();;
+		for(String groupName : groupedImages.getGroups()) {
+			ListDataset<FImage> groupInstances = test.get(groupName); 
+			ListDataset<Record> recordList = new ListBackedDataset<Record>();
+    		for(int i=0; i<groupInstances.size(); i++) {
+    			recordList.add(new Record(String.valueOf(i), groupInstances.get(i)));
+    		}
+    		allData.put(groupName, recordList);
+		}
+		
+		// Split into training and test data
+		GroupedRandomSplitter<String, Record> splits = new GroupedRandomSplitter<String, Record>(allData, 9, 0, 1);
+		GroupedDataset<String, ListDataset<Record>, Record> training = splits.getTrainingDataset();
+		GroupedDataset<String, ListDataset<Record>, Record> test 	 = splits.getTestDataset();;
+		int nTraining = training.numInstances();
+		int nTest = test.numInstances();
+		
 		Timer t1 = Timer.timer();
 		
 		DensePatchEngine engine = new DensePatchEngine(4, 8);
 		HardAssigner<float[], float[], IntFloatPair> assigner = readOrTrainAssigner(engine, 45);
-		FeatureExtractor<DoubleFV, FImage> extractor = new DensePatchFeatureExtractor(assigner, engine);
+		FeatureExtractor<? extends FeatureVector, Record> extractor = new DensePatchFeatureExtractor(assigner, engine);
 		
 		// Construct and train a linear classifier
-		LiblinearAnnotator<FImage, String> annotator = new LiblinearAnnotator<FImage, String>(
+		Classifier<String, Record> annotator = new LiblinearAnnotator<Record, String>(
 				extractor, 
 				Mode.MULTICLASS, 
 				SolverType.L2R_L2LOSS_SVC, 
@@ -59,15 +82,15 @@ public class Run2 extends Run {
 				0.00001
 			);
 
-		annotator.train(training);
+		((LiblinearAnnotator<Record, String>) annotator).train(training);
 
-		ClassificationEvaluator<CMResult<String>, String, FImage> eval =
-				new ClassificationEvaluator<CMResult<String>, String, FImage>(
+		ClassificationEvaluator<CMResult<String>, String, Record> eval =
+				new ClassificationEvaluator<CMResult<String>, String, Record>(
 						annotator, 
 						test, 
-						new CMAnalyser<FImage, String>(CMAnalyser.Strategy.SINGLE));
+						new CMAnalyser<Record, String>(CMAnalyser.Strategy.SINGLE));
 
-		Map<FImage, ClassificationResult<String>> guesses = eval.evaluate();
+		Map<Record, ClassificationResult<String>> guesses = eval.evaluate();
 		CMResult<String> result = eval.analyse(guesses);
 
 		System.out.println(result);
