@@ -46,28 +46,30 @@ public class Run3 extends Run {
 
 
 	File assignerCache = new File("run3_assigner");
-
+	
+	protected GroupedDataset<String, ListDataset<Record>, Record> training;
+	protected GroupedDataset<String, ListDataset<Record>, Record> test;
+	protected int nTraining;
+	protected int nTest;
+	
+	public void splitDataset(){
+		
+		// Split into training and test data
+		GroupedRandomSplitter<String, Record> splits = new GroupedRandomSplitter<String, Record>(allData, 9, 0, 1);	
+		
+		GroupedDataset<String, ListDataset<Record>, Record> training = splits.getTrainingDataset();
+		GroupedDataset<String, ListDataset<Record>, Record> test 	 = splits.getTestDataset();
+		int nTraining = training.numInstances();
+		int nTest = test.numInstances();
+		
+	}
 
 	@Override
 	public void run() {
 
 		loadImages("/Users/marcosss3/Downloads/training");
-
-		// Turn the groups of images into groups of records
-		GroupedDataset<String, ListDataset<Record>, Record> allData = new MapBackedDataset<String, ListDataset<Record>, Record>();;
-		for(String groupName : groupedImages.getGroups()) {
-			ListDataset<FImage> groupInstances = groupedImages.get(groupName); 
-			ListDataset<Record> recordList = new ListBackedDataset<Record>();
-			for(int i=0; i<groupInstances.size(); i++) {
-				recordList.add(new Record(String.valueOf(i), groupInstances.get(i), groupName));
-			}
-			allData.put(groupName, recordList);
-		}
-
-		// Split into training and test data
-		GroupedRandomSplitter<String, Record> splits = new GroupedRandomSplitter<String, Record>(allData, 1, 0, 1);
-		GroupedDataset<String, ListDataset<Record>, Record> training = splits.getTrainingDataset();
-		GroupedDataset<String, ListDataset<Record>, Record> test 	 = splits.getTestDataset();;
+		//splitDataset();
+		
 		int nTraining = training.numInstances();
 		int nTest = test.numInstances();
 
@@ -77,7 +79,7 @@ public class Run3 extends Run {
 		DenseSIFT dsift = new DenseSIFT(3, 8);
 		// Dense sift features are extracted for the given bin sizes
 		PyramidDenseSIFT<FImage> pdsift = new PyramidDenseSIFT<FImage>(dsift, 6f, 8);
-		HardAssigner<float[], float[], IntFloatPair> assigner = readOrTrainAssigner(pdsift, 45);
+		HardAssigner<float[], float[], IntFloatPair> assigner = readOrTrainAssigner(pdsift, nTraining);
 
 		HomogeneousKernelMap map = new HomogeneousKernelMap(
 				KernelType.Chi2, org.openimaj.ml.kernel.HomogeneousKernelMap.WindowType.Rectangular);
@@ -116,11 +118,11 @@ public class Run3 extends Run {
 
 	// Extracts the first 10000 dense SIFT features from the images in the given dataset
 	static HardAssigner<float[], float[], IntFloatPair> trainQuantiser(
-			Dataset<FImage> sample, PyramidDenseSIFT<FImage> pdsift){
+			GroupedDataset<String, ListDataset<Record>, Record> groupedDataset, PyramidDenseSIFT<FImage> pdsift){
 
 		List<LocalFeatureList<FloatDSIFTKeypoint>> allkeys = new ArrayList<LocalFeatureList<FloatDSIFTKeypoint>>();
 
-		for (FImage rec : sample) {
+		for (Record rec : groupedDataset) {
 			FImage img = rec.getImage();
 			pdsift.analyseImage(img);
 			allkeys.add(pdsift.getFloatKeypoints(0.005f));

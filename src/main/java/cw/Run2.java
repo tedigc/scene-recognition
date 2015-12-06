@@ -45,38 +45,54 @@ public class Run2 extends Run {
 	
 	File assignerCache = new File("run2_assigner");
 	
+	// Split into training and test data
+	public void splitDataset(){
+		
+		loadImages("/Users/marcosss3/Downloads/training");
+		
+		System.out.println("Splitting dataset into training and testing sets...");
+		GroupedRandomSplitter<String, Record> splits = new GroupedRandomSplitter<String, Record>(allData, 5, 0, 1);	
+		training = splits.getTrainingDataset();
+		test 	 = splits.getTestDataset();
+		
+		nTraining = training.numInstances();
+		nTest = test.numInstances();
+		System.out.println("Dataset split into training and testing sets.");
+		
+	}
+	
+	public void loadTraining(){
+		
+		loadImages("/Users/marcosss3/Downloads/training");
+		training = allData;
+		nTraining = training.numInstances();
+		System.out.println("Training dataset loaded.");
+		
+	}
+	
+	public void loadTesting(){
+		
+		loadImages("/Users/marcosss3/Downloads/testing");
+		test = allData;
+		nTest = test.numInstances();
+		System.out.println("Testing dataset loaded.");
+		
+	}
 
 	@Override
 	public void run() {
 
-		loadImages("/Users/marcosss3/Downloads/training");
-		
-		// Turn the groups of images into groups of records
-		GroupedDataset<String, ListDataset<Record>, Record> allData = new MapBackedDataset<String, ListDataset<Record>, Record>();;
-		for(String groupName : groupedImages.getGroups()) {
-			ListDataset<FImage> groupInstances = groupedImages.get(groupName); 
-			ListDataset<Record> recordList = new ListBackedDataset<Record>();
-    		for(int i=0; i<groupInstances.size(); i++) {
-    			recordList.add(new Record(String.valueOf(i), groupInstances.get(i), groupName));
-    		}
-    		allData.put(groupName, recordList);
-		}
-		
-		// Split into training and test data
-		GroupedRandomSplitter<String, Record> splits = new GroupedRandomSplitter<String, Record>(allData, 1, 0, 1);
-		GroupedDataset<String, ListDataset<Record>, Record> training = splits.getTrainingDataset();
-		GroupedDataset<String, ListDataset<Record>, Record> test 	 = splits.getTestDataset();;
-		int nTraining = training.numInstances();
-		int nTest = test.numInstances();
-		
+		loadTraining();
+		loadTesting();
+
 		Timer t1 = Timer.timer();
 		
 		DensePatchEngine engine = new DensePatchEngine(4, 8);
-		HardAssigner<float[], float[], IntFloatPair> assigner = readOrTrainAssigner(engine, nTraining);
+		HardAssigner<float[], float[], IntFloatPair> assigner = readOrTrainAssigner(engine, (int) Math.round(0.5*nTraining));
 		FeatureExtractor<? extends FeatureVector, Record> extractor = new DensePatchFeatureExtractor(assigner, engine);
 		
 		// Construct and train a linear classifier
-		Classifier<String, Record> annotator = new LiblinearAnnotator<Record, String>(
+		LiblinearAnnotator<Record, String> annotator = new LiblinearAnnotator<Record, String>(
 				extractor, 
 				Mode.MULTICLASS, 
 				SolverType.L2R_L2LOSS_SVC, 
@@ -105,9 +121,7 @@ public class Run2 extends Run {
 	        System.out.println(pair.getKey().getID() + " " + imgClass.substring(1, imgClass.length()-1));
 	        it.remove(); // avoids a ConcurrentModificationException
 	    }
-	    
-	    
-	    
+	    	    
 	    System.out.println();
 		
 		System.out.println("nTraining: " + nTraining);
@@ -118,13 +132,12 @@ public class Run2 extends Run {
 
 	// Extracts the first 10000 dense SIFT features from the images in the given dataset
 	static HardAssigner<float[], float[], IntFloatPair> trainQuantiser(
-			GroupedDataset<String, ListDataset<FImage>, 
-			FImage> groupedDataset, Engine<FloatKeypoint, FImage> engine){
+			GroupedDataset<String, ListDataset<Record>, Record> groupedDataset, Engine<FloatKeypoint, FImage> engine){
 
 		List<LocalFeatureList<FloatKeypoint>> allkeys = new ArrayList<LocalFeatureList<FloatKeypoint>>();
 
-		for (FImage img : groupedDataset) {
-			allkeys.add(engine.findFeatures(img));
+		for (Record rec: groupedDataset) {
+			allkeys.add(engine.findFeatures(rec.getImage()));
 		}
 
 		FloatKMeans km = FloatKMeans.createKDTreeEnsemble(500);
