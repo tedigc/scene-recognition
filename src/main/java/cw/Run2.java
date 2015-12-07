@@ -50,12 +50,12 @@ public class Run2 extends Run {
 	@Override
 	public void run() {
 
-		splitDataset();
+		splitDataset(Run.TRAINING_PATH_MARCOS);
 
 		Timer t1 = Timer.timer();
 
 		DensePatchEngine engine = new DensePatchEngine(4, 8);
-		HardAssigner<float[], float[], IntFloatPair> assigner = readOrTrainAssigner(engine, (int) Math.round(0.5*nTraining));
+		HardAssigner<float[], float[], IntFloatPair> assigner = readOrTrainAssigner(engine, (int) Math.round(0.2*nTraining));
 		FeatureExtractor<DoubleFV, Record> extractor = new DensePatchFeatureExtractor(assigner, engine);
 
 		// Construct and train a linear classifier

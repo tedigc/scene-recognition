@@ -56,9 +56,10 @@ public abstract class Run {
 			} catch (FileSystemException e) {
 				e.printStackTrace();
 			}
-			for(int i=0; i<groupInstances.size()/10; i++) {
+			for(int i=0; i<groupInstances.size(); i++) {
 				String filename = files[i].getName().getBaseName();
-				recordList.add(new Record(filename, groupInstances.get(i), groupName));
+				if(filename.contains("jpg"))
+					recordList.add(new Record(filename, groupInstances.get(i), groupName));
 			}
 			allData.put(groupName, recordList);
 		}
@@ -72,7 +73,7 @@ public abstract class Run {
 		loadImages(trainingPath);
 
 		System.out.println("Splitting dataset into training and testing sets...");
-		GroupedRandomSplitter<String, Record> splits = new GroupedRandomSplitter<String, Record>(allData, 2, 0, 1);	
+		GroupedRandomSplitter<String, Record> splits = new GroupedRandomSplitter<String, Record>(allData, 9, 0, 10);	
 		training = splits.getTrainingDataset();
 		test 	 = splits.getTestDataset();
 

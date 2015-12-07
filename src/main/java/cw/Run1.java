@@ -25,7 +25,7 @@ public class Run1 extends Run {
 	@Override
 	public void run() {
 
-		realDataset(Run.TRAINING_PATH_TED, Run.TESTING_PATH_TED);
+		realDataset(Run.TRAINING_PATH_MARCOS, Run.TESTING_PATH_MARCOS);
 
 		// -- Training Data
 		//
@@ -57,7 +57,7 @@ public class Run1 extends Run {
 			ListDataset<Record> groupInstances = test.get(groupName);    		
 			for(int i=0; i<groupInstances.size(); i++) {
 				tsIDs[idx] = groupInstances.get(i).getID();
-				System.out.println(tsIDs[idx]);
+				//System.out.println(tsIDs[idx]);
 				tsData[idx] = imageToFloatVector(cropCentre(groupInstances.get(i).getImage()));
 				tsClass[idx] = groupName;
 				idx++;
