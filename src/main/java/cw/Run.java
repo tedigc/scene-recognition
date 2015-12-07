@@ -1,5 +1,11 @@
 package cw;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.Map;
+
 import org.apache.commons.vfs2.FileObject;
 import org.apache.commons.vfs2.FileSystemException;
 import org.openimaj.data.dataset.GroupedDataset;
@@ -55,7 +61,7 @@ public abstract class Run {
 			} catch (FileSystemException e) {
 				e.printStackTrace();
 			}
-			for(int i=0; i<groupInstances.size(); i++) {
+			for(int i=0; i<groupInstances.size()/5; i++) {
 				String filename = files[i].getName().getBaseName();
 				if(filename.contains("jpg"))
 					recordList.add(new Record(filename, groupInstances.get(i), groupName));
@@ -72,7 +78,7 @@ public abstract class Run {
 		loadImages(trainingPath);
 
 		System.out.println("Splitting dataset into training and testing sets...");
-		GroupedRandomSplitter<String, Record> splits = new GroupedRandomSplitter<String, Record>(allData, 90, 0, 10);	
+		GroupedRandomSplitter<String, Record> splits = new GroupedRandomSplitter<String, Record>(allData, 10, 0, 5);	
 		training = splits.getTrainingDataset();
 		test 	 = splits.getTestDataset();
 
@@ -111,5 +117,27 @@ public abstract class Run {
 		System.out.println("Testing dataset loaded.");
 	}
 
+	
+	protected void printPredictions(Map<Integer, String> predictions, String filePath) {
+		
+		try {
+			File file = new File(filePath);
+			if (!file.exists()) {
+				file.createNewFile();
+			}
+
+			FileWriter fw = new FileWriter(file.getAbsoluteFile());
+			BufferedWriter bw = new BufferedWriter(fw);
+
+			for(Integer id : predictions.keySet()) {
+				System.out.println(id + ".jpg" + " " + predictions.get(id));
+				bw.write(id + " " + predictions.get(id) + "\n");
+			}
+			bw.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
 
 }

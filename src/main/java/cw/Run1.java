@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
 import org.apache.commons.lang.ArrayUtils;
 import org.openimaj.data.dataset.ListDataset;
@@ -25,7 +26,8 @@ public class Run1 extends Run {
 	@Override
 	public void run() {
 
-		realDataset(Run.TRAINING_PATH_MARCOS, Run.TESTING_PATH_MARCOS);
+		//		realDataset(Run.TRAINING_PATH_TED, Run.TESTING_PATH_TED);
+		splitDataset(Run.TRAINING_PATH_TED);
 
 		// -- Training Data
 		//
@@ -70,38 +72,24 @@ public class Run1 extends Run {
 		int correct   = 0;
 		int incorrect = 0;
 
-		File file = new File("run1.txt");
+		// For every instance of test data within every group, find the KNN from the training data and its average class.
+		Map<Integer, String> allPredictions = new TreeMap<Integer, String>();
+		for(int i = 0; i < tsData.length-1; i++) {
+			List<IntFloatPair> neighbours = nn.searchKNN(tsData[i], K);
 
-		try {
-			// if file doesnt exists, then create it
-			if (!file.exists()) {
-				file.createNewFile();
-			}
+			// Check if the predicted (mode) class is equal to the actual class.
+			String predictedClass = findModeClass(neighbours, trClass);
+			String actualClass = tsClass[i];
 
-			FileWriter fw = new FileWriter(file.getAbsoluteFile());
-			BufferedWriter bw = new BufferedWriter(fw);
+			if(predictedClass == actualClass) 
+				correct++;
+			else
+				incorrect++;
 
-			// For every instance of test data within every group, find the KNN from the training data and its average class.
-			for(int i = 0; i < tsData.length-1; i++) {
-				List<IntFloatPair> neighbours = nn.searchKNN(tsData[i], K);
-
-				// Check if the predicted (mode) class is equal to the actual class.
-				String predictedClass = findModeClass(neighbours, trClass);
-				String actualClass = tsClass[i];
-
-				if(predictedClass == actualClass) 
-					correct++;
-				else
-					incorrect++;
-
-				// Print and write the image id and predicted classification.
-				System.out.println(tsIDs[i] + ".jpg " + predictedClass);
-				bw.write(tsIDs[i] + " " + predictedClass + "\n");
-			}
-			bw.close();
-		} catch (IOException e) {
-			e.printStackTrace();
+			allPredictions.put(Integer.valueOf(tsIDs[i]), predictedClass);
 		}
+		printPredictions(allPredictions, "run1.txt");
+
 
 		double accuracy = (double) correct / (double) (correct + incorrect);
 		System.out.println("Accuracy : " + round(accuracy*100));
