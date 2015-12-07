@@ -73,7 +73,6 @@ public class Run1 extends Run {
 		File file = new File("run1.txt");
 
 		try {
-
 			// if file doesnt exists, then create it
 			if (!file.exists()) {
 				file.createNewFile();
@@ -95,20 +94,16 @@ public class Run1 extends Run {
 				else
 					incorrect++;
 
-				// Need to get img id
-				System.out.println(tsIDs[i] + " " + predictedClass);
+				// Print and write the image id and predicted classification.
+				System.out.println(tsIDs[i] + ".jpg " + predictedClass);
 				bw.write(tsIDs[i] + " " + predictedClass + "\n");
-
 			}
-
 			bw.close();
-
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 
 		double accuracy = (double) correct / (double) (correct + incorrect);
-		//System.out.println();
 		System.out.println("Accuracy : " + round(accuracy*100));
 	}
 

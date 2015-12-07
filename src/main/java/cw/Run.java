@@ -41,7 +41,6 @@ public abstract class Run {
 			e.printStackTrace();
 		}
 		System.out.println("Finished loading images.");
-
 		System.out.println("Transforming images into records...");
 
 		// Turn the groups of images into groups of records
@@ -67,13 +66,13 @@ public abstract class Run {
 
 	}
 
-	// Splits the training set into training/test sets.
+	// Splits a single training set into training/test sets.
 	public void splitDataset(String trainingPath){
 
 		loadImages(trainingPath);
 
 		System.out.println("Splitting dataset into training and testing sets...");
-		GroupedRandomSplitter<String, Record> splits = new GroupedRandomSplitter<String, Record>(allData, 9, 0, 10);	
+		GroupedRandomSplitter<String, Record> splits = new GroupedRandomSplitter<String, Record>(allData, 90, 0, 10);	
 		training = splits.getTrainingDataset();
 		test 	 = splits.getTestDataset();
 
@@ -91,7 +90,7 @@ public abstract class Run {
 		loadTesting(testingPath);
 	}
 
-	// Load a training data set
+
 	public void loadTraining(String path){
 
 		loadImages(path);
@@ -101,7 +100,7 @@ public abstract class Run {
 		System.out.println("Training dataset loaded.");
 	}
 
-	// Load a testing data set;
+
 	public void loadTesting(String path){
 
 		loadImages(path);
