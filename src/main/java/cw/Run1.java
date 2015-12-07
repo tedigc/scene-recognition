@@ -2,11 +2,8 @@ package cw;
 
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.PrintWriter;
-import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -28,7 +25,7 @@ public class Run1 extends Run {
 	@Override
 	public void run() {
 
-		splitDataset();
+		realDataset(Run.TRAINING_PATH_TED, Run.TESTING_PATH_TED);
 
 		// -- Training Data
 		//
@@ -60,6 +57,7 @@ public class Run1 extends Run {
 			ListDataset<Record> groupInstances = test.get(groupName);    		
 			for(int i=0; i<groupInstances.size(); i++) {
 				tsIDs[idx] = groupInstances.get(i).getID();
+				System.out.println(tsIDs[idx]);
 				tsData[idx] = imageToFloatVector(cropCentre(groupInstances.get(i).getImage()));
 				tsClass[idx] = groupName;
 				idx++;
@@ -98,8 +96,8 @@ public class Run1 extends Run {
 					incorrect++;
 
 				// Need to get img id
-				System.out.println(tsIDs[i] + ".jpg " + predictedClass);
-				bw.write(tsIDs[i] + ".jpg " + predictedClass + "\n");
+				System.out.println(tsIDs[i] + " " + predictedClass);
+				bw.write(tsIDs[i] + " " + predictedClass + "\n");
 
 			}
 

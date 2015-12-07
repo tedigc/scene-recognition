@@ -7,14 +7,16 @@ import org.openimaj.image.ImageProvider;
 public class Record implements Identifiable, ImageProvider<FImage>, Comparable<Record> {
 	
 	
-	private int id;
+	private String id;
+	private int intID;
 	private FImage img;
 	private String imgClass;
 	
 	
 	public Record(String id, FImage img, String imgClass) {
 		
-		this.id = Integer.valueOf(id);
+		this.id = id;
+		this.intID = Integer.valueOf(id.split("\\.")[0]);
 		this.img = img;
 		this.imgClass = imgClass;
 	}
@@ -39,7 +41,7 @@ public class Record implements Identifiable, ImageProvider<FImage>, Comparable<R
 	@Override
 	public int compareTo(Record o) {
 		
-		return this.id - o.id;
+		return this.intID - o.intID;
 		
 	}
 
