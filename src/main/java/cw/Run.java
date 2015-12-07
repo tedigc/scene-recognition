@@ -19,15 +19,14 @@ import org.openimaj.image.ImageUtilities;
 
 
 public abstract class Run {
-	
-	
+
+
 	public static final String TRAINING_PATH_TED    = "/Users/tedigc/Documents/University/Computer Vision/Scene Recognition/SceneRecognition/training";
 	public static final String TESTING_PATH_TED     = "/Users/tedigc/Documents/University/Computer Vision/Scene Recognition/SceneRecognition/testing";
-	
+
 	public static final String TRAINING_PATH_MARCOS = "/Users/marcosss3/Downloads/training";
 	public static final String TESTING_PATH_MARCOS  = "/Users/marcosss3/Downloads/testing";
 
-	protected VFSGroupDataset<FImage> groupedImages;
 	GroupedDataset<String, ListDataset<Record>, Record> allData;
 
 	protected GroupedDataset<String, ListDataset<Record>, Record> training;
@@ -41,8 +40,9 @@ public abstract class Run {
 	public void loadImages(String path) {
 
 		System.out.println("Loading images...");
+		VFSGroupDataset<FImage> groupedImages = null;
 		try {
-			this.groupedImages = new VFSGroupDataset<FImage>(path, ImageUtilities.FIMAGE_READER);
+			groupedImages = new VFSGroupDataset<FImage>(path, ImageUtilities.FIMAGE_READER);
 		} catch (FileSystemException e) {
 			e.printStackTrace();
 		}
@@ -69,7 +69,6 @@ public abstract class Run {
 			allData.put(groupName, recordList);
 		}
 		System.out.println("Finished transforming images into records.");
-
 	}
 
 	// Splits a single training set into training/test sets.
@@ -117,9 +116,9 @@ public abstract class Run {
 		System.out.println("Testing dataset loaded.");
 	}
 
-	
+
 	protected void printPredictions(Map<Integer, String> predictions, String filePath) {
-		
+
 		try {
 			File file = new File(filePath);
 			if (!file.exists()) {
@@ -138,6 +137,6 @@ public abstract class Run {
 			e.printStackTrace();
 		}
 	}
-	
+
 
 }

@@ -32,6 +32,7 @@ public class Record implements Identifiable, ImageProvider<FImage>, Comparable<R
 		return String.valueOf(this.id);
 	}
 	
+	
 	public String getImgClass() {
 
 		return this.imgClass;
