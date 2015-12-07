@@ -32,7 +32,7 @@ public class Run1 extends Run {
 
 		// -- Training Data
 		//
-		int[] trIDs = new int[nTraining];
+		String[] trIDs = new String[nTraining];
 		float[][] trData = new float[nTraining][imgSize]; // Array of vectors describing each image
 		String[] trClass = new String[nTraining];		  // Array of each image's classification
 		int idx = 0;
@@ -41,7 +41,7 @@ public class Run1 extends Run {
 		for(String groupName : training.getGroups()) {
 			ListDataset<Record> groupInstances = training.get(groupName);
 			for(int i = 0; i < groupInstances.size(); i++) {
-				trIDs[idx] = i;
+				trIDs[idx] = groupInstances.get(i).getID();
 				trData[idx] = imageToFloatVector(cropCentre(groupInstances.get(i).getImage()));
 				trClass[idx] = groupName;
 				idx++;
@@ -50,7 +50,7 @@ public class Run1 extends Run {
 
 		// -- Test Data
 		//
-		int[] tsIDs = new int[nTest];
+		String[] tsIDs = new String[nTest];
 		float[][] tsData = new float[nTest][imgSize];
 		String[] tsClass = new String[nTest];
 		idx = 0;
@@ -59,7 +59,7 @@ public class Run1 extends Run {
 		for(String groupName : test.getGroups()) {
 			ListDataset<Record> groupInstances = test.get(groupName);    		
 			for(int i=0; i<groupInstances.size(); i++) {
-				tsIDs[idx] = i;
+				tsIDs[idx] = groupInstances.get(i).getID();
 				tsData[idx] = imageToFloatVector(cropCentre(groupInstances.get(i).getImage()));
 				tsClass[idx] = groupName;
 				idx++;
@@ -115,6 +115,7 @@ public class Run1 extends Run {
 	}
 
 	String round(double d){
+
 		return String.format("%.2f", d);
 	}
 

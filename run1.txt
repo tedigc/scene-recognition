@@ -1,0 +1,14 @@
+7.jpg Street
+2.jpg Mountain
+0.jpg Suburb
+0.jpg store
+9.jpg Highway
+7.jpg Mountain
+8.jpg Coast
+0.jpg bedroom
+2.jpg bedroom
+8.jpg bedroom
+1.jpg Mountain
+7.jpg Insidecity
+1.jpg bedroom
+8.jpg Office

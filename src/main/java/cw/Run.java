@@ -47,14 +47,13 @@ public abstract class Run {
 			}
 			allData.put(groupName, recordList);
 		}
-
 		System.out.println("Finished transforming images into records.");
 
 	}
 
 	public void splitDataset(){
 
-		loadImages("/Users/marcosss3/Downloads/training");
+		loadImages("/Users/tedigc/Documents/University/Computer Vision/Scene Recognition/SceneRecognition/training");
 
 		System.out.println("Splitting dataset into training and testing sets...");
 		GroupedRandomSplitter<String, Record> splits = new GroupedRandomSplitter<String, Record>(allData, 50, 0, 50);	
