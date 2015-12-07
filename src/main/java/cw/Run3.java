@@ -1,6 +1,8 @@
 package cw;
 
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -46,22 +48,22 @@ public class Run3 extends Run {
 
 
 	File assignerCache = new File("run3_assigner");
-	
+
 	protected GroupedDataset<String, ListDataset<Record>, Record> training;
 	protected GroupedDataset<String, ListDataset<Record>, Record> test;
 	protected int nTraining;
 	protected int nTest;
-	
+
 	public void splitDataset(){
-		
+
 		// Split into training and test data
 		GroupedRandomSplitter<String, Record> splits = new GroupedRandomSplitter<String, Record>(allData, 9, 0, 1);	
-		
+
 		GroupedDataset<String, ListDataset<Record>, Record> training = splits.getTrainingDataset();
 		GroupedDataset<String, ListDataset<Record>, Record> test 	 = splits.getTestDataset();
 		int nTraining = training.numInstances();
 		int nTest = test.numInstances();
-		
+
 	}
 
 	@Override
@@ -69,7 +71,7 @@ public class Run3 extends Run {
 
 		loadImages("/Users/marcosss3/Downloads/training");
 		//splitDataset();
-		
+
 		int nTraining = training.numInstances();
 		int nTest = test.numInstances();
 
@@ -106,12 +108,37 @@ public class Run3 extends Run {
 		sortedGuesses.putAll(guesses);
 
 		Iterator it = sortedGuesses.entrySet().iterator();
-		while (it.hasNext()) {
-			Map.Entry<Record, ClassificationResult<String>> pair = (Map.Entry<Record, ClassificationResult<String>>)it.next();
-			String imgClass = pair.getValue().getPredictedClasses().toString();
-			System.out.println(pair.getKey().getID() + " " + imgClass.substring(1, imgClass.length()-1));
-			it.remove(); // avoids a ConcurrentModificationException
+
+		File file = new File("run3.txt");
+
+		try {
+
+			// if file doesnt exists, then create it
+			if (!file.exists()) {
+				file.createNewFile();
+			}
+
+			FileWriter fw = new FileWriter(file.getAbsoluteFile());
+			BufferedWriter bw = new BufferedWriter(fw);
+
+			while (it.hasNext()) {
+				Map.Entry<Record, ClassificationResult<String>> pair = (Map.Entry<Record, ClassificationResult<String>>)it.next();
+				String imgClass = pair.getValue().getPredictedClasses().toString();
+				System.out.println(pair.getKey().getID() + ".jpg " + imgClass.substring(1, imgClass.length()-1));
+				it.remove(); // avoids a ConcurrentModificationException
+			}
+
+			bw.close();
+
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
+
+		System.out.println();
+		System.out.println("nTraining: " + nTraining);
+		System.out.println("nTest    : " + nTest);	
+		System.out.println(result);
+		System.out.println("Time: " + t1.duration()/1000 + "s");
 
 	}		
 

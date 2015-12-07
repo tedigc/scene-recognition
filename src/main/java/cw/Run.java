@@ -33,11 +33,7 @@ public abstract class Run {
 			e.printStackTrace();
 		}
 		System.out.println("Finished loading images.");
-
-	}
-
-	public void imagesToRecords(){
-
+		
 		System.out.println("Transforming images into records...");
 
 		// Turn the groups of images into groups of records
@@ -59,10 +55,9 @@ public abstract class Run {
 	public void splitDataset(){
 
 		loadImages("/Users/marcosss3/Downloads/training");
-		imagesToRecords();
 
 		System.out.println("Splitting dataset into training and testing sets...");
-		GroupedRandomSplitter<String, Record> splits = new GroupedRandomSplitter<String, Record>(allData, 90, 0, 10);	
+		GroupedRandomSplitter<String, Record> splits = new GroupedRandomSplitter<String, Record>(allData, 50, 0, 50);	
 		training = splits.getTrainingDataset();
 		test 	 = splits.getTestDataset();
 
@@ -71,11 +66,17 @@ public abstract class Run {
 		System.out.println("Dataset split into training and testing sets.");
 
 	}
+	
+	public void realDataset(){
+		
+		loadTraining();
+		loadTesting();
+		
+	}
 
 	public void loadTraining(){
 
 		loadImages("/Users/marcosss3/Downloads/training");
-		imagesToRecords();
 
 		training = allData;
 		nTraining = training.numInstances();
@@ -87,23 +88,9 @@ public abstract class Run {
 
 		loadImages("/Users/marcosss3/Downloads/testing");
 
-		// Turn the groups of images into groups of records
-		allData = new MapBackedDataset<String, ListDataset<Record>, Record>();
-
-		for(String groupName : groupedImages.getGroups()) {
-			ListDataset<FImage> groupInstances = groupedImages.get(groupName); 
-			ListDataset<Record> recordList = new ListBackedDataset<Record>();
-			for(int i=0; i<groupInstances.size(); i++) {
-				recordList.add(new Record(String.valueOf(i), groupInstances.get(i), groupName));
-			}
-			allData.put(groupName, recordList);
-		}
-
-		System.out.println("Finished transforming images into records.");
-
 		test = allData;
 		nTest = test.numInstances();
-		System.out.println(test.size());
+		System.out.println(test.get("test").numInstances());
 		System.out.println("Testing dataset loaded.");
 
 	}
