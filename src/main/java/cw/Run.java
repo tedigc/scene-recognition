@@ -13,6 +13,7 @@ import org.openimaj.data.dataset.ListBackedDataset;
 import org.openimaj.data.dataset.ListDataset;
 import org.openimaj.data.dataset.MapBackedDataset;
 import org.openimaj.data.dataset.VFSGroupDataset;
+import org.openimaj.experiment.dataset.sampling.GroupSampler;
 import org.openimaj.experiment.dataset.split.GroupedRandomSplitter;
 import org.openimaj.image.FImage;
 import org.openimaj.image.ImageUtilities;
@@ -77,7 +78,8 @@ public abstract class Run {
 		loadImages(trainingPath);
 
 		System.out.println("Splitting dataset into training and testing sets...");
-		GroupedRandomSplitter<String, Record> splits = new GroupedRandomSplitter<String, Record>(allData, 90, 0, 10);	
+		GroupedDataset sample = GroupSampler.sample(allData, 10, false);
+		GroupedRandomSplitter<String, Record> splits = new GroupedRandomSplitter<String, Record>(sample, 5, 0, 1);	
 		training = splits.getTrainingDataset();
 		test 	 = splits.getTestDataset();
 

@@ -47,8 +47,8 @@ public class Run2 extends Run {
 
 		Timer t1 = Timer.timer();
 
-		DensePatchEngine engine = new DensePatchEngine(2, 8);
-		HardAssigner<float[], float[], IntFloatPair> assigner = readOrTrainAssigner(engine, (int) Math.round(0.2*nTraining));
+		DensePatchEngine engine = new DensePatchEngine(3, 8);
+		HardAssigner<float[], float[], IntFloatPair> assigner = readOrTrainAssigner(engine, 30);
 		FeatureExtractor<DoubleFV, Record> extractor = new DensePatchFeatureExtractor(assigner, engine);
 
 		// Construct and train a linear classifier
@@ -60,7 +60,7 @@ public class Run2 extends Run {
 				0.00001
 				);
 
-		((LiblinearAnnotator<Record, String>) annotator).train(training);
+		annotator.train(training);
 
 		ClassificationEvaluator<CMResult<String>, String, Record> eval =
 				new ClassificationEvaluator<CMResult<String>, String, Record>(

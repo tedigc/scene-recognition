@@ -46,7 +46,6 @@ import de.bwaldvogel.liblinear.SolverType;
 
 public class Run3 extends Run {
 
-
 	File assignerCache = new File("run3_assigner");
 
 	@Override
@@ -62,8 +61,8 @@ public class Run3 extends Run {
 		// Extracts upright SIFT features at a single scale on a grid
 		DenseSIFT dsift = new DenseSIFT(3, 8);
 		// Dense sift features are extracted for the given bin sizes
-		PyramidDenseSIFT<FImage> pdsift = new PyramidDenseSIFT<FImage>(dsift, 6f, 4, 6, 8, 10);
-		HardAssigner<float[], float[], IntFloatPair> assigner = readOrTrainAssigner(pdsift, nTraining);
+		PyramidDenseSIFT<FImage> pdsift = new PyramidDenseSIFT<FImage>(dsift, 6f, 4, 6, 8);
+		HardAssigner<float[], float[], IntFloatPair> assigner = readOrTrainAssigner(pdsift, 30);
 
 		HomogeneousKernelMap map = new HomogeneousKernelMap(
 				KernelType.Chi2, org.openimaj.ml.kernel.HomogeneousKernelMap.WindowType.Rectangular);
