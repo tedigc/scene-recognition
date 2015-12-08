@@ -49,28 +49,10 @@ public class Run3 extends Run {
 
 	File assignerCache = new File("run3_assigner");
 
-	protected GroupedDataset<String, ListDataset<Record>, Record> training;
-	protected GroupedDataset<String, ListDataset<Record>, Record> test;
-	protected int nTraining;
-	protected int nTest;
-
-	public void splitDataset(){
-
-		// Split into training and test data
-		GroupedRandomSplitter<String, Record> splits = new GroupedRandomSplitter<String, Record>(allData, 9, 0, 1);	
-
-		GroupedDataset<String, ListDataset<Record>, Record> training = splits.getTrainingDataset();
-		GroupedDataset<String, ListDataset<Record>, Record> test 	 = splits.getTestDataset();
-		int nTraining = training.numInstances();
-		int nTest = test.numInstances();
-
-	}
-
 	@Override
 	public void run() {
 
-		loadImages("/Users/marcosss3/Downloads/training");
-		//splitDataset();
+		splitDataset(Run.TRAINING_PATH_MARCOS);
 
 		int nTraining = training.numInstances();
 		int nTest = test.numInstances();
@@ -80,7 +62,7 @@ public class Run3 extends Run {
 		// Extracts upright SIFT features at a single scale on a grid
 		DenseSIFT dsift = new DenseSIFT(3, 8);
 		// Dense sift features are extracted for the given bin sizes
-		PyramidDenseSIFT<FImage> pdsift = new PyramidDenseSIFT<FImage>(dsift, 6f, 8);
+		PyramidDenseSIFT<FImage> pdsift = new PyramidDenseSIFT<FImage>(dsift, 6f, 4, 6, 8, 10);
 		HardAssigner<float[], float[], IntFloatPair> assigner = readOrTrainAssigner(pdsift, nTraining);
 
 		HomogeneousKernelMap map = new HomogeneousKernelMap(
@@ -93,7 +75,7 @@ public class Run3 extends Run {
 		LiblinearAnnotator<Record, String> ann = new LiblinearAnnotator<Record, String>(
 				extractor, Mode.MULTICLASS, SolverType.L2R_L2LOSS_SVC, 1.0, 0.00001);
 
-		ann.train((List<? extends Annotated<Record, String>>) training);
+		ann.train(training);
 
 		ClassificationEvaluator<CMResult<String>, String, Record> eval =
 				new ClassificationEvaluator<CMResult<String>, String, Record>(

@@ -38,7 +38,6 @@ import de.bwaldvogel.liblinear.SolverType;
 
 public class Run2 extends Run {
 
-
 	File assignerCache = new File("run2_assigner");
 
 	@Override
@@ -48,7 +47,7 @@ public class Run2 extends Run {
 
 		Timer t1 = Timer.timer();
 
-		DensePatchEngine engine = new DensePatchEngine(4, 8);
+		DensePatchEngine engine = new DensePatchEngine(2, 8);
 		HardAssigner<float[], float[], IntFloatPair> assigner = readOrTrainAssigner(engine, (int) Math.round(0.2*nTraining));
 		FeatureExtractor<DoubleFV, Record> extractor = new DensePatchFeatureExtractor(assigner, engine);
 
@@ -120,7 +119,7 @@ public class Run2 extends Run {
 			allkeys.add(engine.findFeatures(rec.getImage()));
 		}
 
-		FloatKMeans km = FloatKMeans.createKDTreeEnsemble(500);
+		FloatKMeans km = FloatKMeans.createKDTreeEnsemble(600);
 		DataSource<float[]> datasource = new LocalFeatureListDataSource<FloatKeypoint, float[]>(allkeys);
 		FloatCentroidsResult result = km.cluster(datasource);
 

@@ -15,15 +15,15 @@ import org.openimaj.util.pair.IntFloatPair;
 
 public class Run1 extends Run {
 
-	private int K = 10;
+	private int K = 1;
 	private final int resolution = 16;
 	private final int imgSize = resolution * resolution;
 
 	@Override
 	public void run() {
 
-		//		realDataset(Run.TRAINING_PATH_TED, Run.TESTING_PATH_TED);
-		splitDataset(Run.TRAINING_PATH_TED);
+		realDataset(Run.TRAINING_PATH_MARCOS, Run.TESTING_PATH_MARCOS);
+		//splitDataset(Run.TRAINING_PATH_MARCOS);
 
 		// -- Training Data
 		//
@@ -84,11 +84,14 @@ public class Run1 extends Run {
 
 			allPredictions.put(Integer.valueOf(tsIDs[i]), predictedClass);
 		}
+		
 		printPredictions(allPredictions, "run1.txt");
-
-
+		System.out.println();
+		System.out.println("nTraining: " + nTraining);
+		System.out.println("nTest    : " + nTest);	
 		double accuracy = (double) correct / (double) (correct + incorrect);
 		System.out.println("Accuracy : " + round(accuracy*100));
+		
 	}
 
 	String round(double d){
