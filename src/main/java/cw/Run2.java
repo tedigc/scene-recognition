@@ -52,7 +52,7 @@ public class Run2 extends Run {
 		Timer t1 = Timer.timer();
 
 		// Extracts features based on fixed size densely-sampled pixel patches
-		DensePatchEngine engine = new DensePatchEngine(2, 8);
+		DensePatchEngine engine = new DensePatchEngine(4, 8);
 
 		// Sample a subset from the training set to train the quantiser
 		HardAssigner<float[], float[], IntFloatPair> assigner = readOrTrainAssigner(engine, 10);
@@ -132,6 +132,9 @@ public class Run2 extends Run {
 		for (Record rec: groupedDataset) {
 			allkeys.add(engine.findFeatures(rec.getImage()));
 		}
+		
+		if (allkeys.size() > (int) allkeys.size()*0.2)
+			allkeys = allkeys.subList(0, (int) (allkeys.size()*0.2));
 
 		// Cluster sample of features using K-Means
 		FloatKMeans km = FloatKMeans.createKDTreeEnsemble(600);

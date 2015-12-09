@@ -97,40 +97,54 @@ public class Run1 extends Run {
 	String round(double d){
 
 		return String.format("%.2f", d);
+		
 	}
 
+	// Given a list of neighbours, return the most common one
 	private String findModeClass(List<IntFloatPair> neighbours, String[] trClass) {
 
 		Map<String, Integer> occurences = new HashMap<String, Integer>();
 		int modeOccurences = 0;
 		String modeClass = null;
+		
 		for(IntFloatPair pair : neighbours) {
+			
 			String neighbourClass = trClass[pair.getFirst()];
 			int nOccurences;
+			
 			if(occurences.containsKey(neighbourClass)) {
 				nOccurences = occurences.get(neighbourClass) + 1;
-			} else {
+			} 
+			else {
 				nOccurences = 1;
 			}
+			
 			occurences.put(neighbourClass, nOccurences);
+			
 			if(nOccurences > modeOccurences) {
 				modeClass = neighbourClass;
 			}
+			
 		}
+		
 		return modeClass;
+		
 	}
 
 	// Crop image to a square about the center and resize
 	private FImage cropCentre(FImage original){
 
 		int resolution = 0;
+		
 		if(original.width < original.height)
 			resolution = original.width;
 		else
 			resolution = original.height;
 
 		FImage img = ResizeProcessor.resample(original.extractCenter(resolution, resolution), this.resolution, this.resolution);
+		
 		return img.normalise();
+		
 	}
 
 	// Pack image pixels into a row vector
@@ -141,7 +155,9 @@ public class Run1 extends Run {
 		for(int i=0; i< img.height; i++){
 			floatVector = ArrayUtils.addAll(floatVector, img.pixels[i]);
 		}
+		
 		return floatVector;
+		
 	}
 
 

@@ -38,7 +38,7 @@ public class DensePatchEngine implements Engine<FloatKeypoint, FImage>{
 		MemoryLocalFeatureList<FloatKeypoint> featureList = new MemoryLocalFeatureList<FloatKeypoint>(features);
 		
 		// Return a sample of the features
-		return featureList.randomSubList((int) (featureList.size()*0.2));
+		return featureList;
 		
 	}
 	

@@ -65,10 +65,10 @@ public class Run3 extends Run {
 		DenseSIFT dsift = new DenseSIFT(3, 8);
 
 		// Dense sift features are extracted for the given bin sizes
-		PyramidDenseSIFT<FImage> pdsift = new PyramidDenseSIFT<FImage>(dsift, 6f, 4, 6, 8, 10);
+		PyramidDenseSIFT<FImage> pdsift = new PyramidDenseSIFT<FImage>(dsift, 6f, 4, 8, 16, 32);
 
 		// Sample a subset from the training set to train the quantiser
-		HardAssigner<float[], float[], IntFloatPair> assigner = readOrTrainAssigner(pdsift, 30);
+		HardAssigner<float[], float[], IntFloatPair> assigner = readOrTrainAssigner(pdsift, 10);
 
 		// Appends spatial histograms computed from the collection of visual words
 		FeatureExtractor<DoubleFV, Record> extractor = new PHOWExtractor(pdsift, assigner);
@@ -106,7 +106,7 @@ public class Run3 extends Run {
 
 		Iterator it = sortedGuesses.entrySet().iterator();
 
-		File file = new File("run3.txt");
+		File file = new File("NEWrun3.txt");
 
 		// Write predictions to a text file in the corresponding format
 		try {
@@ -157,8 +157,8 @@ public class Run3 extends Run {
 			allkeys.add(pdsift.getFloatKeypoints(0.005f));
 		}
 
-		if (allkeys.size() > 10000)
-			allkeys = allkeys.subList(0, 10000);
+		if (allkeys.size() > (int) allkeys.size()*0.2)
+			allkeys = allkeys.subList(0, (int) (allkeys.size()*0.2));
 
 		// Cluster features using K-Means
 		FloatKMeans km = FloatKMeans.createKDTreeEnsemble(600);

@@ -1,0 +1,16 @@
+\begin{thebibliography}{1}
+
+\bibitem{fei2005bayesian}
+Li~Fei-Fei and Pietro Perona.
+\newblock A bayesian hierarchical model for learning natural scene categories.
+\newblock In {\em Computer Vision and Pattern Recognition, 2005. CVPR 2005.
+  IEEE Computer Society Conference on}, volume~2, pages 524--531. IEEE, 2005.
+
+\bibitem{lazebnik2006beyond}
+Svetlana Lazebnik, Cordelia Schmid, and Jean Ponce.
+\newblock Beyond bags of features: Spatial pyramid matching for recognizing
+  natural scene categories.
+\newblock In {\em Computer Vision and Pattern Recognition, 2006 IEEE Computer
+  Society Conference on}, volume~2, pages 2169--2178. IEEE, 2006.
+
+\end{thebibliography}

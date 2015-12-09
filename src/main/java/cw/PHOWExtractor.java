@@ -34,7 +34,8 @@ class PHOWExtractor implements FeatureExtractor<DoubleFV, Record> {
 		BagOfVisualWords<float[]> bovw = new BagOfVisualWords<float[]>(assigner);
 
 		// Compute spatial histograms
-		PyramidSpatialAggregator<float[], SparseIntFV> spatial = new PyramidSpatialAggregator<float[], SparseIntFV>(bovw, 2, 4);
+		PyramidSpatialAggregator<float[], SparseIntFV> spatial = 
+				new PyramidSpatialAggregator<float[], SparseIntFV>(bovw, 2, 4);
 
 		// Append and normalize the resultant spatial histograms
 		return spatial.aggregate(
