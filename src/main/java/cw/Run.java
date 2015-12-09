@@ -49,7 +49,7 @@ public abstract class Run {
 		}
 		System.out.println("Finished loading images.");
 		System.out.println("Transforming images into records...");
-
+		
 		// Turn the groups of images into groups of records
 		allData = new MapBackedDataset<String, ListDataset<Record>, Record>();
 
@@ -64,12 +64,17 @@ public abstract class Run {
 			}
 			for(int i=0; i<groupInstances.size(); i++) {
 				String filename = files[i].getName().getBaseName();
-				if(filename.contains("jpg"))
+				if(filename.toLowerCase().contains(".j")){
 					recordList.add(new Record(filename, groupInstances.get(i), groupName));
+				}
 			}
 			allData.put(groupName, recordList);
 		}
+		
 		System.out.println("Finished transforming images into records.");
+		
+		// REMOVE
+		//allData = GroupSampler.sample(allData, 5, false);
 	}
 
 	// Splits a single training set into training/test sets.
@@ -78,8 +83,7 @@ public abstract class Run {
 		loadImages(trainingPath);
 
 		System.out.println("Splitting dataset into training and testing sets...");
-		GroupedDataset sample = GroupSampler.sample(allData, 10, false);
-		GroupedRandomSplitter<String, Record> splits = new GroupedRandomSplitter<String, Record>(sample, 5, 0, 1);	
+		GroupedRandomSplitter<String, Record> splits = new GroupedRandomSplitter<String, Record>(allData, 90, 0, 10);	
 		training = splits.getTrainingDataset();
 		test 	 = splits.getTestDataset();
 
@@ -132,7 +136,7 @@ public abstract class Run {
 
 			for(Integer id : predictions.keySet()) {
 				System.out.println(id + ".jpg" + " " + predictions.get(id));
-				bw.write(id + " " + predictions.get(id) + "\n");
+				bw.write(id + ".jpg " + predictions.get(id) + "\n");
 			}
 			bw.close();
 		} catch (IOException e) {

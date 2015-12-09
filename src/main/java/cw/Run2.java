@@ -43,6 +43,7 @@ public class Run2 extends Run {
 	@Override
 	public void run() {
 
+		//realDataset(Run.TRAINING_PATH_MARCOS, Run.TESTING_PATH_MARCOS);
 		splitDataset(Run.TRAINING_PATH_MARCOS);
 
 		Timer t1 = Timer.timer();
@@ -91,6 +92,7 @@ public class Run2 extends Run {
 			while (it.hasNext()) {
 				Map.Entry<Record, ClassificationResult<String>> pair = (Map.Entry<Record, ClassificationResult<String>>)it.next();
 				String imgClass = pair.getValue().getPredictedClasses().toString();
+				bw.write(pair.getKey().getID() + ".jpg " + imgClass.substring(1, imgClass.length()-1) + "\n");
 				System.out.println(pair.getKey().getID() + ".jpg " + imgClass.substring(1, imgClass.length()-1));
 				it.remove(); // avoids a ConcurrentModificationException
 			}
@@ -118,6 +120,10 @@ public class Run2 extends Run {
 		for (Record rec: groupedDataset) {
 			allkeys.add(engine.findFeatures(rec.getImage()));
 		}
+		
+//		// Extract the first 10000 features from the images in the dataset
+		if (allkeys.size() > 10000)
+	        allkeys = allkeys.subList(0, 10000);
 
 		FloatKMeans km = FloatKMeans.createKDTreeEnsemble(600);
 		DataSource<float[]> datasource = new LocalFeatureListDataSource<FloatKeypoint, float[]>(allkeys);

@@ -61,7 +61,7 @@ public class Run3 extends Run {
 		// Extracts upright SIFT features at a single scale on a grid
 		DenseSIFT dsift = new DenseSIFT(3, 8);
 		// Dense sift features are extracted for the given bin sizes
-		PyramidDenseSIFT<FImage> pdsift = new PyramidDenseSIFT<FImage>(dsift, 6f, 4, 6, 8);
+		PyramidDenseSIFT<FImage> pdsift = new PyramidDenseSIFT<FImage>(dsift, 6f, 4, 6, 8, 10);
 		HardAssigner<float[], float[], IntFloatPair> assigner = readOrTrainAssigner(pdsift, 30);
 
 		HomogeneousKernelMap map = new HomogeneousKernelMap(
@@ -105,6 +105,7 @@ public class Run3 extends Run {
 			while (it.hasNext()) {
 				Map.Entry<Record, ClassificationResult<String>> pair = (Map.Entry<Record, ClassificationResult<String>>)it.next();
 				String imgClass = pair.getValue().getPredictedClasses().toString();
+				bw.write(pair.getKey().getID() + ".jpg " + imgClass.substring(1, imgClass.length()-1) + "\n");
 				System.out.println(pair.getKey().getID() + ".jpg " + imgClass.substring(1, imgClass.length()-1));
 				it.remove(); // avoids a ConcurrentModificationException
 			}
