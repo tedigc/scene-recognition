@@ -1,13 +1,13 @@
 # Fdb version 3
-["bibtex Report"] 1449701895 "Report.aux" "Report.bbl" "Report" 1449701896
+["bibtex Report"] 1449701895 "Report.aux" "Report.bbl" "Report" 1449703086
   "/usr/local/texlive/2015/texmf-dist/bibtex/bst/base/plain.bst" 1292289607 20613 bd3fbfa9f64872b81ac57a0dd2ed855f ""
-  "Report.aux" 1449701896 1685 c0c0fa0d96aa04be18009743f8b032bc ""
+  "Report.aux" 1449703069 1685 c0c0fa0d96aa04be18009743f8b032bc ""
   "Report.bcf" 0 -1 0 ""
   "sceneclassification_references.bib" 1449681161 1009 4194a1c73c38e39d51115bb544221fb6 ""
   (generated)
-  "Report.blg"
   "Report.bbl"
-["pdflatex"] 1449701896 "Report.tex" "Report.pdf" "Report" 1449701896
+  "Report.blg"
+["pdflatex"] 1449701896 "Report.tex" "Report.pdf" "Report" 1449703086
   "./graphs/clusters.png" 1449681293 36192 620338126e8033b908e204a0857534de ""
   "./graphs/kNN.png" 1449450787 46634 ac4c3ea55d34b4b0866e75681715fde2 ""
   "./graphs/patch.png" 1449681320 33259 2aeb8e9c9f53d0ec867b13063f975989 ""
@@ -160,14 +160,14 @@
   "/usr/local/texlive/2015/texmf-var/fonts/map/pdftex/updmap/pdftex.map" 1432479641 1764542 91654ba72bdb667e84ea24f076ae16d8 ""
   "/usr/local/texlive/2015/texmf-var/web2c/pdftex/pdflatex.fmt" 1444132925 3849859 e50d0e66fcdb8693a0fbaf06442d257c ""
   "/usr/local/texlive/2015/texmf.cnf" 1432479636 577 0d611272082f3cdb8e80e09a3c69cf07 ""
-  "Report.aux" 1449701896 1685 c0c0fa0d96aa04be18009743f8b032bc ""
-  "Report.bbl" 1449701895 920 cd2e1b226ac6657049505b0c7b9d1523 "bibtex Report"
-  "Report.tex" 1449701893 13269 07c5f04ae1d79bd3286f68f1de2fcbf1 ""
+  "Report.aux" 1449703069 1685 c0c0fa0d96aa04be18009743f8b032bc ""
+  "Report.bbl" 1449703069 920 cd2e1b226ac6657049505b0c7b9d1523 "bibtex Report"
+  "Report.tex" 1449703069 13269 07c5f04ae1d79bd3286f68f1de2fcbf1 ""
   "graphs/clusters.png" 1449681293 36192 620338126e8033b908e204a0857534de ""
   "graphs/kNN.png" 1449450787 46634 ac4c3ea55d34b4b0866e75681715fde2 ""
   "graphs/patch.png" 1449681320 33259 2aeb8e9c9f53d0ec867b13063f975989 ""
   "graphs/step.png" 1449681302 34709 1d8ef42de101220dc9cec7adf5d0a5e8 ""
   (generated)
-  "Report.pdf"
   "Report.aux"
+  "Report.pdf"
   "Report.log"
