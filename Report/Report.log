@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015) (preloaded format=pdflatex 2015.10.6)  9 DEC 2015 17:26
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015) (preloaded format=pdflatex 2015.10.6)  9 DEC 2015 22:58
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -930,6 +930,21 @@ File: omscmr.fd 2014/09/29 v2.5h Standard LaTeX font definitions
 LaTeX Font Info:    Font shape `OMS/cmr/m/n' in size <10> not available
 (Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 80.
 
+Underfull \hbox (badness 10000) in paragraph at lines 80--81
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 81--82
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 82--83
+
+ []
+
+
 Underfull \hbox (badness 10000) in paragraph at lines 86--87
 
  []
@@ -939,23 +954,48 @@ Overfull \hbox (27.65958pt too wide) in paragraph at lines 100--100
 []\OT1/cmr/bx/n/14.4 Pyramid Dense SIFT with Ho-mo-ge-neous Ker-nel Map 
  []
 
-[3] [4] <graphs/kNN.png, id=27, 422.0568pt x 253.4268pt>
+[3]
+Underfull \hbox (badness 10000) in paragraph at lines 110--111
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 113--114
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 114--115
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 115--116
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 121--122
+
+ []
+
+[4] <graphs/kNN.png, id=27, 422.0568pt x 253.4268pt>
 File: graphs/kNN.png Graphic file (type png)
  <use graphs/kNN.png>
-Package pdftex.def Info: graphs/kNN.png used on input line 134.
+Package pdftex.def Info: graphs/kNN.png used on input line 147.
 (pdftex.def)             Requested size: 397.48499pt x 238.68526pt.
 
 <graphs/clusters.png, id=29, 362.3136pt x 217.7736pt>
 File: graphs/clusters.png Graphic file (type png)
 
 <use graphs/clusters.png>
-Package pdftex.def Info: graphs/clusters.png used on input line 142.
+Package pdftex.def Info: graphs/clusters.png used on input line 155.
 (pdftex.def)             Requested size: 397.48499pt x 238.91368pt.
  <graphs/step.png, id=30, 362.3136pt x 217.7736pt>
 File: graphs/step.png Graphic file (type png)
 
 <use graphs/step.png>
-Package pdftex.def Info: graphs/step.png used on input line 148.
+Package pdftex.def Info: graphs/step.png used on input line 161.
 (pdftex.def)             Requested size: 397.48499pt x 238.91368pt.
 
 
@@ -964,7 +1004,7 @@ LaTeX Warning: `!h' float specifier changed to `!ht'.
 <graphs/patch.png, id=31, 362.3136pt x 217.7736pt>
 File: graphs/patch.png Graphic file (type png)
  <use graphs/patch.png>
-Package pdftex.def Info: graphs/patch.png used on input line 154.
+Package pdftex.def Info: graphs/patch.png used on input line 167.
 (pdftex.def)             Requested size: 397.48499pt x 238.91368pt.
 
 
@@ -979,13 +1019,13 @@ LaTeX Font Warning: Some font shapes were not available, defaults substituted.
 
  ) 
 Here is how much of TeX's memory you used:
- 13887 strings out of 493089
- 267470 string characters out of 6134842
- 419703 words of memory out of 5000000
- 17062 multiletter control sequences out of 15000+600000
+ 13888 strings out of 493089
+ 267485 string characters out of 6134842
+ 418707 words of memory out of 5000000
+ 17063 multiletter control sequences out of 15000+600000
  10213 words of font info for 39 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 62i,6n,56p,890b,292s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 62i,6n,56p,908b,292s stack positions out of 5000i,500n,10000p,200000b,80000s
 </usr/local/texlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx10.pfb
 ></usr/local/texlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb>
 </usr/local/texlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb><
@@ -996,7 +1036,7 @@ ocal/texlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/lo
 cal/texlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmti10.pfb></usr/loc
 al/texlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmtt10.pfb></usr/loca
 l/texlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmtt12.pfb>
-Output written on Report.pdf (7 pages, 228943 bytes).
+Output written on Report.pdf (7 pages, 232824 bytes).
 PDF statistics:
  80 PDF objects out of 1000 (max. 8388607)
  52 compressed objects within 1 object stream

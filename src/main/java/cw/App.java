@@ -6,7 +6,7 @@ public class App {
 
 	public static void main(String[] args) {
 			
-		Run2 run1 = new Run2();
+		Run3 run1 = new Run3();
 		run1.run();
 	}
 	

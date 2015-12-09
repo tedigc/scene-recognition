@@ -95,9 +95,6 @@ public abstract class Run {
 		
 		System.out.println("Finished transforming images into records.");
 		
-		// REMOVE
-		allData = GroupSampler.sample(allData, 5, false);
-		
 	}
 
 	// Splits a single training set into training and test subsets.
@@ -106,7 +103,7 @@ public abstract class Run {
 		loadImages(trainingPath);
 
 		System.out.println("Splitting dataset into training and testing sets...");
-		GroupedRandomSplitter<String, Record> splits = new GroupedRandomSplitter<String, Record>(allData, 50, 0, 10);	
+		GroupedRandomSplitter<String, Record> splits = new GroupedRandomSplitter<String, Record>(allData, 90, 0, 10);	
 		training = splits.getTrainingDataset();
 		test 	 = splits.getTestDataset();
 

@@ -43,8 +43,6 @@ public class Run2 extends Run {
 	@Override
 	public void run() {
 
-		System.out.println("Performing Run2 with 18x18 patches...");
-
 		// Load the dataset of images
 		//realDataset(Run.TRAINING_PATH_MARCOS, Run.TESTING_PATH_MARCOS);
 		splitDataset(Run.TRAINING_PATH_MARCOS);
@@ -52,10 +50,10 @@ public class Run2 extends Run {
 		Timer t1 = Timer.timer();
 
 		// Extracts features based on fixed size densely-sampled pixel patches
-		DensePatchEngine engine = new DensePatchEngine(4, 8);
+		DensePatchEngine engine = new DensePatchEngine(3, 8);
 
 		// Sample a subset from the training set to train the quantiser
-		HardAssigner<float[], float[], IntFloatPair> assigner = readOrTrainAssigner(engine, 10);
+		HardAssigner<float[], float[], IntFloatPair> assigner = readOrTrainAssigner(engine, 30);
 
 		// Appends spatial histograms computed from the collection of visual words
 		FeatureExtractor<DoubleFV, Record> extractor = new DensePatchFeatureExtractor(assigner, engine);

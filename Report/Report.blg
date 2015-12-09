@@ -3,44 +3,44 @@ Capacity: max_strings=35307, hash_size=35307, hash_prime=30011
 The top-level auxiliary file: Report.aux
 The style file: plain.bst
 Database file #1: sceneclassification_references.bib.bib
-You've used 2 entries,
+You've used 3 entries,
             2118 wiz_defined-function locations,
-            510 strings with 4498 characters,
-and the built_in function-call counts, 1043 in all, are:
-= -- 113
-> -- 31
-< -- 4
-+ -- 13
-- -- 10
-* -- 65
-:= -- 148
-add.period$ -- 8
-call.type$ -- 2
-change.case$ -- 11
+            517 strings with 4696 characters,
+and the built_in function-call counts, 1571 in all, are:
+= -- 169
+> -- 54
+< -- 5
++ -- 22
+- -- 18
+* -- 99
+:= -- 225
+add.period$ -- 12
+call.type$ -- 3
+change.case$ -- 18
 chr.to.int$ -- 0
-cite$ -- 2
-duplicate$ -- 48
-empty$ -- 86
-format.name$ -- 10
-if$ -- 242
+cite$ -- 3
+duplicate$ -- 72
+empty$ -- 127
+format.name$ -- 18
+if$ -- 363
 int.to.chr$ -- 0
-int.to.str$ -- 2
-missing$ -- 2
-newline$ -- 13
-num.names$ -- 4
-pop$ -- 15
+int.to.str$ -- 3
+missing$ -- 3
+newline$ -- 18
+num.names$ -- 6
+pop$ -- 25
 preamble$ -- 1
-purify$ -- 9
+purify$ -- 15
 quote$ -- 0
-skip$ -- 42
+skip$ -- 60
 stack$ -- 0
-substring$ -- 83
-swap$ -- 26
-text.length$ -- 4
+substring$ -- 120
+swap$ -- 36
+text.length$ -- 5
 text.prefix$ -- 0
 top$ -- 0
-type$ -- 8
+type$ -- 12
 warning$ -- 0
-while$ -- 10
-width$ -- 3
-write$ -- 28
+while$ -- 15
+width$ -- 4
+write$ -- 40

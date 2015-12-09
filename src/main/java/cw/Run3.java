@@ -51,8 +51,6 @@ public class Run3 extends Run {
 	@Override
 	public void run() {
 
-		System.out.println("Performing Run3...");
-
 		realDataset(Run.TRAINING_PATH_MARCOS, Run.TESTING_PATH_MARCOS);
 		//splitDataset(Run.TRAINING_PATH_MARCOS);
 
@@ -65,10 +63,10 @@ public class Run3 extends Run {
 		DenseSIFT dsift = new DenseSIFT(3, 8);
 
 		// Dense sift features are extracted for the given bin sizes
-		PyramidDenseSIFT<FImage> pdsift = new PyramidDenseSIFT<FImage>(dsift, 6f, 4, 8, 16, 32);
+		PyramidDenseSIFT<FImage> pdsift = new PyramidDenseSIFT<FImage>(dsift, 6f, 4, 6, 8, 10);
 
 		// Sample a subset from the training set to train the quantiser
-		HardAssigner<float[], float[], IntFloatPair> assigner = readOrTrainAssigner(pdsift, 10);
+		HardAssigner<float[], float[], IntFloatPair> assigner = readOrTrainAssigner(pdsift, 30);
 
 		// Appends spatial histograms computed from the collection of visual words
 		FeatureExtractor<DoubleFV, Record> extractor = new PHOWExtractor(pdsift, assigner);
@@ -106,7 +104,7 @@ public class Run3 extends Run {
 
 		Iterator it = sortedGuesses.entrySet().iterator();
 
-		File file = new File("NEWrun3.txt");
+		File file = new File("run3.txt");
 
 		// Write predictions to a text file in the corresponding format
 		try {
