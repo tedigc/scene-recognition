@@ -23,7 +23,8 @@ class DensePatchFeatureExtractor implements FeatureExtractor<DoubleFV, Record> {
 	public DoubleFV extractFeature(Record rec) {
 
 		FImage image = rec.getImage();
-		// Assign each dense SIFT feature to a visual word
+		
+		// Assign each densely-sampled feature to a visual word
 		BagOfVisualWords<float[]> bovw = new BagOfVisualWords<float[]>(assigner);
 
 		// Compute spatial histograms
@@ -32,6 +33,7 @@ class DensePatchFeatureExtractor implements FeatureExtractor<DoubleFV, Record> {
 		
 		// Append and normalise the resultant spatial histograms
 		return spatial.aggregate(engine.findFeatures(image), image.getBounds()).normaliseFV();
+		
 	}
 	
 	

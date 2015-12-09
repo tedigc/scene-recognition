@@ -50,7 +50,7 @@ public class Run1 extends Run {
 		String[] tsClass = new String[nTest];
 		idx = 0;
 
-		// For every instance of data, within every group, turn the img into a feature vector and record it's classification
+		// For every instance of data, within every group, turn the img into a feature vector and record its classification
 		for(String groupName : test.getGroups()) {
 			ListDataset<Record> groupInstances = test.get(groupName);    		
 			for(int i=0; i<groupInstances.size(); i++) {

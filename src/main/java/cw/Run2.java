@@ -43,13 +43,21 @@ public class Run2 extends Run {
 	@Override
 	public void run() {
 
+		System.out.println("Performing Run2 with 18x18 patches...");
+
+		// Load the dataset of images
 		//realDataset(Run.TRAINING_PATH_MARCOS, Run.TESTING_PATH_MARCOS);
 		splitDataset(Run.TRAINING_PATH_MARCOS);
 
 		Timer t1 = Timer.timer();
 
-		DensePatchEngine engine = new DensePatchEngine(3, 8);
-		HardAssigner<float[], float[], IntFloatPair> assigner = readOrTrainAssigner(engine, 30);
+		// Extracts features based on fixed size densely-sampled pixel patches
+		DensePatchEngine engine = new DensePatchEngine(2, 8);
+
+		// Sample a subset from the training set to train the quantiser
+		HardAssigner<float[], float[], IntFloatPair> assigner = readOrTrainAssigner(engine, 10);
+
+		// Appends spatial histograms computed from the collection of visual words
 		FeatureExtractor<DoubleFV, Record> extractor = new DensePatchFeatureExtractor(assigner, engine);
 
 		// Construct and train a linear classifier
@@ -60,31 +68,32 @@ public class Run2 extends Run {
 				1.0, 
 				0.00001
 				);
-
 		annotator.train(training);
 
+		// Use OpenIMAJ evaluation framework to assess classifier accuracy
 		ClassificationEvaluator<CMResult<String>, String, Record> eval =
 				new ClassificationEvaluator<CMResult<String>, String, Record>(
 						annotator, 
 						test, 
 						new CMAnalyser<Record, String>(CMAnalyser.Strategy.SINGLE));
 
+		// Store guess for each image/record
 		Map<Record, ClassificationResult<String>> guesses = eval.evaluate();
 		CMResult<String> result = eval.analyse(guesses);
 
+		// Store ordered guesses
 		TreeMap<Record, ClassificationResult<String>> sortedGuesses = new TreeMap<Record, ClassificationResult<String>>();
 		sortedGuesses.putAll(guesses);
 
 		Iterator it = sortedGuesses.entrySet().iterator();
-		
+
 		File file = new File("run2.txt");
 
+		// Write predictions to a text file in the corresponding format
 		try {
 
-			// if file doesnt exists, then create it
-			if (!file.exists()) {
+			if (!file.exists())
 				file.createNewFile();
-			}
 
 			FileWriter fw = new FileWriter(file.getAbsoluteFile());
 			BufferedWriter bw = new BufferedWriter(fw);
@@ -92,9 +101,10 @@ public class Run2 extends Run {
 			while (it.hasNext()) {
 				Map.Entry<Record, ClassificationResult<String>> pair = (Map.Entry<Record, ClassificationResult<String>>)it.next();
 				String imgClass = pair.getValue().getPredictedClasses().toString();
+				// Write file name and predicted class
 				bw.write(pair.getKey().getID() + ".jpg " + imgClass.substring(1, imgClass.length()-1) + "\n");
 				System.out.println(pair.getKey().getID() + ".jpg " + imgClass.substring(1, imgClass.length()-1));
-				it.remove(); // avoids a ConcurrentModificationException
+				it.remove();
 			}
 
 			bw.close();
@@ -103,12 +113,13 @@ public class Run2 extends Run {
 			e.printStackTrace();
 		}
 
+		// Print size of datasets, accuracy, error rate and time
 		System.out.println();
 		System.out.println("nTraining: " + nTraining);
 		System.out.println("nTest    : " + nTest);	
 		System.out.println(result);
 		System.out.println("Time: " + t1.duration()/1000 + "s");
-		
+
 	}
 
 	// Extracts the first 10000 dense SIFT features from the images in the given dataset
@@ -117,19 +128,18 @@ public class Run2 extends Run {
 
 		List<LocalFeatureList<FloatKeypoint>> allkeys = new ArrayList<LocalFeatureList<FloatKeypoint>>();
 
+		// Record the list of features extracted from each image
 		for (Record rec: groupedDataset) {
 			allkeys.add(engine.findFeatures(rec.getImage()));
 		}
-		
-//		// Extract the first 10000 features from the images in the dataset
-		if (allkeys.size() > 10000)
-	        allkeys = allkeys.subList(0, 10000);
 
+		// Cluster sample of features using K-Means
 		FloatKMeans km = FloatKMeans.createKDTreeEnsemble(600);
 		DataSource<float[]> datasource = new LocalFeatureListDataSource<FloatKeypoint, float[]>(allkeys);
 		FloatCentroidsResult result = km.cluster(datasource);
 
 		return result.defaultHardAssigner();
+		
 	}
 
 	// Attempts to read the HardAssigner from the cache, or trains one if this can't be done.

@@ -51,7 +51,10 @@ public class Run3 extends Run {
 	@Override
 	public void run() {
 
-		splitDataset(Run.TRAINING_PATH_MARCOS);
+		System.out.println("Performing Run3...");
+
+		realDataset(Run.TRAINING_PATH_MARCOS, Run.TESTING_PATH_MARCOS);
+		//splitDataset(Run.TRAINING_PATH_MARCOS);
 
 		int nTraining = training.numInstances();
 		int nTest = test.numInstances();
@@ -60,31 +63,44 @@ public class Run3 extends Run {
 
 		// Extracts upright SIFT features at a single scale on a grid
 		DenseSIFT dsift = new DenseSIFT(3, 8);
+
 		// Dense sift features are extracted for the given bin sizes
 		PyramidDenseSIFT<FImage> pdsift = new PyramidDenseSIFT<FImage>(dsift, 6f, 4, 6, 8, 10);
+
+		// Sample a subset from the training set to train the quantiser
 		HardAssigner<float[], float[], IntFloatPair> assigner = readOrTrainAssigner(pdsift, 30);
 
+		// Appends spatial histograms computed from the collection of visual words
+		FeatureExtractor<DoubleFV, Record> extractor = new PHOWExtractor(pdsift, assigner);
+
+		// Transforms data into a linear representation for higher accuracy
 		HomogeneousKernelMap map = new HomogeneousKernelMap(
 				KernelType.Chi2, org.openimaj.ml.kernel.HomogeneousKernelMap.WindowType.Rectangular);
 
-		FeatureExtractor<DoubleFV, Record> extractor = new PHOWExtractor(pdsift, assigner);
+		// Create new feature extractor around the PHOWExtractor that applies the map
 		extractor = map.createWrappedExtractor(extractor);
 
 		// Construct and train a linear classifier
 		LiblinearAnnotator<Record, String> ann = new LiblinearAnnotator<Record, String>(
-				extractor, Mode.MULTICLASS, SolverType.L2R_L2LOSS_SVC, 1.0, 0.00001);
-
+				extractor,
+				Mode.MULTICLASS,
+				SolverType.L2R_L2LOSS_SVC,
+				1.0,
+				0.00001);
 		ann.train(training);
 
+		// Use OpenIMAJ evaluation framework to assess classifier accuracy
 		ClassificationEvaluator<CMResult<String>, String, Record> eval =
 				new ClassificationEvaluator<CMResult<String>, String, Record>(
 						ann, 
 						test, 
 						new CMAnalyser<Record, String>(CMAnalyser.Strategy.SINGLE));
 
+		// Store guess for each image/record
 		Map<Record, ClassificationResult<String>> guesses = eval.evaluate();
 		CMResult<String> result = eval.analyse(guesses);
 
+		// Store ordered guesses
 		TreeMap<Record, ClassificationResult<String>> sortedGuesses = new TreeMap<Record, ClassificationResult<String>>();
 		sortedGuesses.putAll(guesses);
 
@@ -92,6 +108,7 @@ public class Run3 extends Run {
 
 		File file = new File("run3.txt");
 
+		// Write predictions to a text file in the corresponding format
 		try {
 
 			// if file doesnt exists, then create it
@@ -105,9 +122,10 @@ public class Run3 extends Run {
 			while (it.hasNext()) {
 				Map.Entry<Record, ClassificationResult<String>> pair = (Map.Entry<Record, ClassificationResult<String>>)it.next();
 				String imgClass = pair.getValue().getPredictedClasses().toString();
+				// Write file name and predicted class
 				bw.write(pair.getKey().getID() + ".jpg " + imgClass.substring(1, imgClass.length()-1) + "\n");
 				System.out.println(pair.getKey().getID() + ".jpg " + imgClass.substring(1, imgClass.length()-1));
-				it.remove(); // avoids a ConcurrentModificationException
+				it.remove();
 			}
 
 			bw.close();
@@ -116,6 +134,7 @@ public class Run3 extends Run {
 			e.printStackTrace();
 		}
 
+		// Print size of datasets, accuracy, error rate and time
 		System.out.println();
 		System.out.println("nTraining: " + nTraining);
 		System.out.println("nTest    : " + nTest);	
@@ -131,6 +150,7 @@ public class Run3 extends Run {
 
 		List<LocalFeatureList<FloatDSIFTKeypoint>> allkeys = new ArrayList<LocalFeatureList<FloatDSIFTKeypoint>>();
 
+		// Record the list of features extracted from each image
 		for (Record rec : groupedDataset) {
 			FImage img = rec.getImage();
 			pdsift.analyseImage(img);
@@ -140,6 +160,7 @@ public class Run3 extends Run {
 		if (allkeys.size() > 10000)
 			allkeys = allkeys.subList(0, 10000);
 
+		// Cluster features using K-Means
 		FloatKMeans km = FloatKMeans.createKDTreeEnsemble(600);
 		DataSource<float[]> datasource = new LocalFeatureListDataSource<FloatDSIFTKeypoint, float[]>(allkeys);
 		FloatCentroidsResult result = km.cluster(datasource);
